@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { DAISETY_PAGES, PAGES, type PageId } from '@/data/pages';
+import { DAISETY_PAGES, PAGES, PAGE_PATHS } from '@/data/pages';
 
 type SideMenuProps = {
   open: boolean;
   onClose: () => void;
-  onSelect: (id: PageId) => void;
 };
 
 const itemClass =
   'flex w-full items-center rounded-lg px-4 py-3 text-left text-base text-zinc-200 transition-colors hover:bg-white/5 hover:text-white';
 
-export default function SideMenu({ open, onClose, onSelect }: SideMenuProps) {
+export default function SideMenu({ open, onClose }: SideMenuProps) {
   const [daisetyOpen, setDaisetyOpen] = useState(false);
 
   return (
@@ -30,9 +29,9 @@ export default function SideMenu({ open, onClose, onSelect }: SideMenuProps) {
         <nav className="flex-1 overflow-y-auto px-4 pb-8">
           <ul className="space-y-1">
             <li>
-              <button type="button" className={itemClass} onClick={() => onSelect('about-us')}>
+              <a href={PAGE_PATHS['about-us']} className={itemClass}>
                 {PAGES['about-us'].menuLabel}
-              </button>
+              </a>
             </li>
             <li>
               <button
@@ -57,9 +56,9 @@ export default function SideMenu({ open, onClose, onSelect }: SideMenuProps) {
                 <ul className="overflow-hidden pl-4">
                   {DAISETY_PAGES.map((id) => (
                     <li key={id}>
-                      <button type="button" className={itemClass} onClick={() => onSelect(id)}>
+                      <a href={PAGE_PATHS[id]} className={itemClass}>
                         {PAGES[id].menuLabel}
-                      </button>
+                      </a>
                     </li>
                   ))}
                 </ul>

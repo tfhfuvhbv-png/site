@@ -176,3 +176,16 @@ export const PAGES: Record<PageId, PageContent> = {
 };
 
 export const DAISETY_PAGES: PageId[] = ['about-daisety', 'terms', 'privacy'];
+
+// Stable URLs allow every page to be opened, refreshed, and shared directly.
+export const PAGE_PATHS: Record<PageId, string> = {
+  'about-us': '/about-us',
+  'about-daisety': '/about-daisety',
+  terms: '/terms',
+  privacy: '/privacy',
+};
+
+export function pageFromPath(pathname: string): PageId | null {
+  const path = pathname.replace(/\/+$/, '') || '/';
+  return (Object.keys(PAGE_PATHS) as PageId[]).find((id) => PAGE_PATHS[id] === path) ?? null;
+}

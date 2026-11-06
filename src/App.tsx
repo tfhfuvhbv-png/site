@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import SideMenu from '@/components/SideMenu';
 import ContentView from '@/components/ContentView';
-import type { PageId } from '@/data/pages';
+import { PAGES, pageFromPath } from '@/data/pages';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activePage, setActivePage] = useState<PageId | null>(null);
+  const activePage = pageFromPath(window.location.pathname);
+
+  useEffect(() => {
+    document.title = activePage ? `${PAGES[activePage].title} | Zhenova Apps` : 'Zhenova Apps';
+  }, [activePage]);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -16,18 +20,16 @@ function App() {
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
-  const openPage = (id: PageId) => {
-    setMenuOpen(false);
-    setActivePage(id);
-  };
-
   if (activePage) {
+    return <ContentView pageId={activePage} />;
+  }
+
+  if (window.location.pathname.replace(/\/+$/, '') !== '') {
     return (
-      <ContentView
-        pageId={activePage}
-        onClose={() => setActivePage(null)}
-        onNavigate={openPage}
-      />
+      <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-black p-8 text-white">
+        <h1 className="text-3xl font-semibold">Page not found</h1>
+        <a href="/" className="underline underline-offset-4">Back to home</a>
+      </main>
     );
   }
 
@@ -50,7 +52,7 @@ function App() {
         {menuOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={openPage} />
+      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }

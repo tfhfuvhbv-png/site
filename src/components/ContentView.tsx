@@ -1,27 +1,24 @@
 import { ArrowLeft, ChevronRight } from 'lucide-react';
-import { PAGES, type ContentBlock, type PageId } from '@/data/pages';
+import { PAGES, PAGE_PATHS, type ContentBlock, type PageId } from '@/data/pages';
 
 type ContentViewProps = {
   pageId: PageId;
-  onClose: () => void;
-  onNavigate: (id: PageId) => void;
 };
 
-export default function ContentView({ pageId, onClose, onNavigate }: ContentViewProps) {
+export default function ContentView({ pageId }: ContentViewProps) {
   const page = PAGES[pageId];
 
   return (
     <div className="min-h-screen bg-black text-white animate-fade-in">
       <header className="sticky top-0 z-10 border-b border-white/10 bg-black/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center px-6 py-4">
-          <button
-            type="button"
-            onClick={onClose}
+          <a
+            href={pageId === 'terms' || pageId === 'privacy' ? PAGE_PATHS['about-daisety'] : '/'}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-zinc-200 transition-colors hover:bg-white/10 hover:text-white"
           >
             <ArrowLeft size={16} />
-            Back
-          </button>
+            {pageId === 'terms' || pageId === 'privacy' ? 'About Daisety' : 'Home'}
+          </a>
         </div>
       </header>
 
@@ -35,7 +32,7 @@ export default function ContentView({ pageId, onClose, onNavigate }: ContentView
 
         <div className="mt-10 space-y-5">
           {page.blocks.map((block, index) => (
-            <Block key={index} block={block} onNavigate={onNavigate} />
+            <Block key={index} block={block} />
           ))}
         </div>
       </article>
@@ -45,10 +42,9 @@ export default function ContentView({ pageId, onClose, onNavigate }: ContentView
 
 type BlockProps = {
   block: ContentBlock;
-  onNavigate: (id: PageId) => void;
 };
 
-function Block({ block, onNavigate }: BlockProps) {
+function Block({ block }: BlockProps) {
   switch (block.type) {
     case 'heading':
       return (
@@ -81,14 +77,13 @@ function Block({ block, onNavigate }: BlockProps) {
         <ul className="space-y-2">
           {block.links.map((id) => (
             <li key={id}>
-              <button
-                type="button"
-                onClick={() => onNavigate(id)}
+              <a
+                href={PAGE_PATHS[id]}
                 className="flex w-full items-center justify-between rounded-lg border border-white/10 bg-zinc-950 px-4 py-3 text-left text-base text-zinc-200 transition-colors hover:border-white/25 hover:text-white"
               >
                 {PAGES[id].title}
                 <ChevronRight size={18} className="text-zinc-500" />
-              </button>
+              </a>
             </li>
           ))}
         </ul>
