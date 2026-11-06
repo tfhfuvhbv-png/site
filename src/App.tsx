@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import SideMenu from '@/components/SideMenu';
 import ContentView from '@/components/ContentView';
-import type { PageId } from '@/data/pages';
+import { PAGES, type PageId } from '@/data/pages';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activePage, setActivePage] = useState<PageId | null>(null);
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+  const slug = pathname.slice(1);
+  const activePage = Object.prototype.hasOwnProperty.call(PAGES, slug) ? slug as PageId : null;
+
+  useEffect(() => {
+    document.title = activePage ? `${PAGES[activePage].title} | Zhenova Apps` : pathname === '/' ? 'Zhenova Apps' : 'Page not found | Zhenova Apps';
+  }, [activePage, pathname]);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -16,23 +22,16 @@ function App() {
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
-  const openPage = (id: PageId) => {
-    setMenuOpen(false);
-    setActivePage(id);
-  };
-
-  if (activePage) {
-    return (
-      <ContentView
-        pageId={activePage}
-        onClose={() => setActivePage(null)}
-        onNavigate={openPage}
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-black text-white">
+      {activePage ? (
+        <ContentView pageId={activePage} />
+      ) : pathname !== '/' ? (
+        <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-6 px-6">
+          <h1 className="text-3xl font-semibold">Page not found</h1>
+          <a href="/" className="text-zinc-300 underline underline-offset-4">Back to home</a>
+        </main>
+      ) : (
       <main className="flex min-h-screen items-center justify-center p-8">
         <img
           src="/file_00000000e09881f4995198967b881499.png"
@@ -40,17 +39,20 @@ function App() {
           className="w-64 animate-fade-in sm:w-80 md:w-[28rem]"
         />
       </main>
+      )}
 
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        aria-controls="site-menu"
         className="fixed right-6 top-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur transition-colors hover:bg-white/10 active:scale-95"
       >
         {menuOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSelect={openPage} />
+      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }
