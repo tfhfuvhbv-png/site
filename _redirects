@@ -1,0 +1,2 @@
+# Cloudflare Pages: serve the SPA entry point for direct visits to app routes.
+/* /index.html 200
