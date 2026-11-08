@@ -41,7 +41,7 @@ return () => {
 
 useEffect(() => {
 document.title = activePage
-? "${activePage === 'about-us' ? 'About Us' : activePage === 'about-daisety' ? 'About Daisety' : activePage === 'terms' ? 'Terms of Service' : 'Privacy Policy'} | Zhenova Apps"
+? `${activePage === 'about-us' ? 'About Us' : activePage === 'about-daisety' ? 'About Daisety' : activePage === 'terms' ? 'Terms of Service' : 'Privacy Policy'} | Zhenova Apps`
 : 'Zhenova Apps';
 }, [activePage]);
 
